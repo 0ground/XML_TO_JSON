@@ -6,19 +6,3 @@
 	<Salary>4565465488</Salary>
 </Employee>
 
-<!-- Expected output
-{
-   "Employees":{
-      "EmployeeName":{
-         "FirstName":"Steve",
-         "LastName":"Jobs"
-      },
-      "Contact":{
-         "Mobile":"665584522",
-         "Email":"steve.jobs@apple.com"
-      },
-      "Salary":"4565465488"
-   }
-}
--->
-
