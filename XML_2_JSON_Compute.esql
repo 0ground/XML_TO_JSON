@@ -25,11 +25,11 @@ CREATE COMPUTE MODULE XML_2_JSON_Compute
 -- 	Converted to Employee_M.json
 --	Result is stored in the same folder
 
--- Source file
--- 	C:\Users\userm\Desktop\IBM\class\IIB\IIB_Session06_IIB_ESQL_02132018\note\Employee.xml
+-- Payload file
+-- 	Employee.xml
 
--- Converted file
---	C:\Users\userm\Desktop\IBM\class\IIB\IIB_Session06_IIB_ESQL_02132018\note\Employee_M.json
+-- Expected File Format
+--	Employee_M.json
 
 -- Tested and working
 		
