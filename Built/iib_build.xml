@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="run">
+	
+	
+   <target name="run" description="Intialize environment">
+      <property name="iib.toolkit.dir" value="C:\Progra~1\IBM\IIB\10.0.0.8\tools" />
+      <property name="iib.runtime.dir" value="C:\Progra~1\IBM\IIB\10.0.0.8\server\bin" />
+	  <property name="iib.path" value="C:\Program Files\IBM\IIB\10.0.0.8" />
+	  <property name="iib.mqsiprofile" value="${path.iib}\server\bin\mqsiprofile" />
+      <property name="appln.name" value="XML_TO_JSON" />
+      <property name="bar.name" value="${appln.name}\Bars\DEV-${appln.name}.bar" />
+	  <property name="properties.file" value="${appln.name}\override.properties" />
+	  
+	  <property name="integration.node" value="HW_NODE" />
+	  <property name="integration.server" value="TRANSFORM" />
+	  <property name="integration.host" value="localhost" />
+	  <property name="integration.port" value="4415" />
+	  
+	  <property name="ant.main.class" value="org.apache.tools.ant.Main" />
+	  <property name="ant.launcher.class" value="org.apache.tools.ant.launch.Launcher" />
+	  
+	  <antcall target="mqsideploybar" />
+   </target>
+   
+	<!--
+		Target to build the broker archive using mqsicreatebar
+	-->
+   <target name="mqsicreatebar">
+      <echo message="Building Broker Archive file: ${bar.name} " />
+      <exec executable="${iib.toolkit.dir}\mqsicreatebar.exe" spawn="false">
+         <arg value="-data" />
+         <arg value="." />
+         <arg value="-b" />
+         <arg value="${bar.name}" />
+         <arg value="-a" />
+         <arg value="${appln.name}" />
+		 <arg value="-trace" />
+      </exec>
+      <echo message="Completed building Broker Archive file - ${bar.name} " />
+   </target>
+   
+   <!--
+		Target to override the broker archive properties using mqsiapplybaroverride
+	-->
+   <target name="mqsiapplybaroverride" depends="mqsicreatebar">
+	  
+		<echo message="Overriding Broker Archive properties: ${bar.name} " />
+		<exec dir="C:\Progra~1\IBM\IIB\10.0.0.8\server\bin" executable="cmd" failonerror="true">
+			<arg value="/c"/>
+			<arg value="C:\Progra~1\IBM\IIB\10.0.0.8\server\bin\mqsiprofile; mqsiapplybaroverride" />
+			<arg value="-b" />
+			 <arg value="${bar.name}" />
+			 <arg value="-p" />
+			 <arg value="${properties.file}" />
+			 <arg value="-k" />
+			 <arg value="${appln.name}" />
+		</exec>
+	  
+	  <!--<exec executable="${iib.runtime.dir}\mqsiapplybaroverride.bat" spawn="false">
+         <arg value="-b" />
+		 <arg value="${bar.name}" />
+         <arg value="-p" />
+         <arg value="${properties.file}" />
+         <arg value="-k" />
+         <arg value="${appln.name}" />
+      </exec>-->
+      <echo message="Completed verriding Broker Archive properties: ${bar.name} " />
+   </target>
+   
+	<!--
+		Target to deploy the broker archive using mqsideploybar
+	-->
+   <target name="mqsideploybar" depends="mqsiapplybaroverride">
+	  
+      <echo message="Deploying Broker Archive file: ${bar.name} " />
+      <!--<exec executable="${iib.runtime.dir}\mqsideploy.exe" spawn="false">-->
+	  <!-- mqsideploy D.BRWIN.01 -i 172.31.0.159 -p 4415  -e WebServices -a C:\Progra~2\Jenkins\IIB-App1-Ant\HTTP_JSON_WS_APP\HTTP_JSON_WS_APP.bar -w 600 -->
+	  <exec dir="C:\Progra~1\IBM\IIB\10.0.0.8\server\bin\" executable="cmd" failonerror="true">
+		 <arg value="/c"/>
+		 
+		<!-- <arg value="mqsideployscript.bat" /> -->
+	<!--mqsideploy HW_NODE -i 10.1.10.207 -p 4415 -e default -a C:\Progra~2\Jenkins\jobs\IIB_Ant_Build\workspace\HTTP_JSON_WS_APP\HTTP_JSON_WS_APP.bar  -w 600-->
+		 <arg value="mqsideployscript.bat" />
+		 <arg value="${integration.node}" />
+		 <arg value="-i" />
+         <arg value="${integration.host}" />
+		 <arg value="-p" />
+         <arg value="${integration.port}" />
+         <arg value="-e" />
+         <arg value="${integration.server}" />
+         <arg value="-a" />
+         <arg value="${bar.name}" />
+	<!-- <arg value="-v" />
+		 <arg value="C:\Progra~2\Jenkins\jobs\IIB_Ant_Build\workspace\deploy.log" />
+	-->	 
+		 <arg value="-w" />
+         <arg value="600" />
+      </exec>
+      <echo message="Completed deploying Broker Archive file - ${bar.name} " />
+   </target>
+
+</project>
